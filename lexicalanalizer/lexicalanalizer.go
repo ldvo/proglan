@@ -67,8 +67,10 @@ func GetTokens(data []byte) ([]Token, error) {
 		runeType := runetype.GetRuneType(runes[pos])
 		status = transitionMatrix[status][runeType]
 		if status < 100 {
+			// Keep reading
 			value = append(value, runes[pos])
 		} else if status < 200 {
+			// Add token
 			tokenType := tokentype.TokenType(status - 100)
 			if tokenType == tokentype.Number || tokenType == tokentype.Variable {
 				pos--
@@ -83,8 +85,24 @@ func GetTokens(data []byte) ([]Token, error) {
 			status = 0
 			value = []rune{}
 		} else {
+			// Invalid rune
 			return tokens, fmt.Errorf("Syntax error at position %d, char %s", pos, string(runes[pos]))
 		}
+	}
+	// If we were reading a number or a variable, add it
+	if status == 1 {
+		token := Token{
+			TokenType: tokentype.Number,
+			Value:     string(value),
+		}
+		tokens = append(tokens, token)
+	}
+	if status == 2 || status == 3 {
+		token := Token{
+			TokenType: tokentype.Variable,
+			Value:     string(value),
+		}
+		tokens = append(tokens, token)
 	}
 	return tokens, nil
 }
