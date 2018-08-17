@@ -8,25 +8,34 @@ import (
 )
 
 func main() {
+	var reader *bufio.Reader
+	readFromFile := true
 	input, err := os.Open("input.txt")
-	defer input.Close()
 	if err != nil {
-		fmt.Print(err)
-		return
+		fmt.Print("> ")
+		reader = bufio.NewReader(os.Stdin)
+		readFromFile = false
+	} else {
+		reader = bufio.NewReader(input)
+		defer input.Close()
 	}
 
-	reader := bufio.NewReader(input)
-	data, _, err := reader.ReadLine()
-	if err != nil {
-		fmt.Print(err)
-		return
-	}
-	tokens, err := lexicalanalizer.GetTokens(data)
-	if err != nil {
-		fmt.Print(err)
-		return
-	}
-	for _, token := range tokens {
-		fmt.Printf("Type: %s \nValue: %s\n", token.TokenType, token.Value)
+	scanner := bufio.NewScanner(reader)
+	scanner.Split(bufio.ScanLines)
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		tokens, err := lexicalanalizer.GetTokens(line)
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			fmt.Println("Tokens:")
+			for _, token := range tokens {
+				fmt.Printf("Type: %s Value: %s\n", token.TokenType, token.Value)
+			}
+		}
+		if !readFromFile {
+			fmt.Print("> ")
+		}
 	}
 }

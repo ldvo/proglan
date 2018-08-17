@@ -58,11 +58,11 @@ var transitionMatrix = []map[runetype.RuneType]int{
 }
 
 // GetTokens : Gets the tokens for a given byte array
-func GetTokens(data []byte) ([]Token, error) {
+func GetTokens(data string) ([]Token, error) {
 	status := 0
 	value := []rune{}
 	tokens := []Token{}
-	runes := []rune(string(data))
+	runes := []rune(data)
 	for pos := 0; pos < len(runes); pos++ {
 		runeType := runetype.GetRuneType(runes[pos])
 		status = transitionMatrix[status][runeType]
@@ -86,7 +86,7 @@ func GetTokens(data []byte) ([]Token, error) {
 			value = []rune{}
 		} else {
 			// Invalid rune
-			return tokens, fmt.Errorf("Syntax error at position %d, char %s", pos, string(runes[pos]))
+			return tokens, fmt.Errorf("Syntax error at position %d, char '%s'", pos, string(runes[pos]))
 		}
 	}
 	// If we were reading a number or a variable, add it
