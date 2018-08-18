@@ -1,3 +1,5 @@
+//go:generate stringer -type=RuneType
+
 package runetype
 
 import (
@@ -10,6 +12,8 @@ type RuneType int
 const (
 	// Invalid type
 	Invalid RuneType = iota
+	// Space type
+	Space
 	// Digit type
 	Digit
 	// Letter type
@@ -26,6 +30,9 @@ const (
 
 // GetRuneType : Gets the rune type for a given rune
 func GetRuneType(r rune) RuneType {
+	if unicode.IsSpace(r) {
+		return Space
+	}
 	if unicode.IsDigit(r) {
 		return Digit
 	}

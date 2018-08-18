@@ -18,6 +18,7 @@ var transitionMatrix = []map[runetype.RuneType]int{
 	// State 0
 	{
 		runetype.Invalid:     errorState,
+		runetype.Space:       0,
 		runetype.Digit:       1,
 		runetype.Letter:      errorState,
 		runetype.Pound:       2,
@@ -28,6 +29,7 @@ var transitionMatrix = []map[runetype.RuneType]int{
 	// State 1
 	{
 		runetype.Invalid:     errorState,
+		runetype.Space:       int(tokentype.Number) + 100,
 		runetype.Digit:       1,
 		runetype.Letter:      errorState,
 		runetype.Pound:       int(tokentype.Number) + 100,
@@ -38,6 +40,7 @@ var transitionMatrix = []map[runetype.RuneType]int{
 	// State 2
 	{
 		runetype.Invalid:     errorState,
+		runetype.Space:       errorState,
 		runetype.Digit:       errorState,
 		runetype.Letter:      3,
 		runetype.Pound:       errorState,
@@ -48,6 +51,7 @@ var transitionMatrix = []map[runetype.RuneType]int{
 	// State 3
 	{
 		runetype.Invalid:     errorState,
+		runetype.Space:       int(tokentype.Variable) + 100,
 		runetype.Digit:       3,
 		runetype.Letter:      3,
 		runetype.Pound:       int(tokentype.Variable) + 100,
@@ -96,8 +100,7 @@ func GetTokens(data string) ([]Token, error) {
 			Value:     string(value),
 		}
 		tokens = append(tokens, token)
-	}
-	if status == 2 || status == 3 {
+	} else if status == 3 {
 		token := Token{
 			TokenType: tokentype.Variable,
 			Value:     string(value),
