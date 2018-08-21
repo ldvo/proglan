@@ -6,6 +6,7 @@ import (
 	"proglan/lexicalanalizer"
 )
 
+// ParseExpression checks if a sequence of tokens is valid
 func ParseExpression(tokens []lexicalanalizer.Token) error {
 	if len(tokens) < 2 {
 		return fmt.Errorf("Empty expression")
@@ -15,7 +16,7 @@ func ParseExpression(tokens []lexicalanalizer.Token) error {
 		return err
 	}
 	if nextToken != len(tokens)-1 {
-		return fmt.Errorf("Unexpected char at position %d, found '%s'", nextToken, tokens[nextToken].Value)
+		return fmt.Errorf("Unexpected end of expression")
 	}
 	if tokens[nextToken].TokenType != tokentype.EOF {
 		return fmt.Errorf("Expected '.' at the end")
