@@ -26,7 +26,7 @@ func ParseExpression(tokens []lexicalanalizer.Token) error {
 
 func parseParenthesis(tokens []lexicalanalizer.Token, nextToken int) (int, error) {
 	if tokens[nextToken].TokenType != tokentype.Parenthesis && tokens[nextToken].Value != "(" {
-		return 0, fmt.Errorf("Unexpected char at position %d, found '%s'", nextToken, tokens[nextToken].Value)
+		return 0, fmt.Errorf("Expected '(' at position %d, found '%s'", nextToken, tokens[nextToken].Value)
 	}
 
 	var err error
@@ -36,7 +36,7 @@ func parseParenthesis(tokens []lexicalanalizer.Token, nextToken int) (int, error
 	}
 
 	if tokens[nextToken].TokenType != tokentype.Parenthesis && tokens[nextToken].Value != ")" {
-		return 0, fmt.Errorf("Unexpected char at position %d, found '%s'", nextToken, tokens[nextToken].Value)
+		return 0, fmt.Errorf("Expected ')' at position %d, found '%s'", nextToken, tokens[nextToken].Value)
 	}
 	nextToken++
 	return nextToken, nil
@@ -45,7 +45,7 @@ func parseParenthesis(tokens []lexicalanalizer.Token, nextToken int) (int, error
 func parseOperation(tokens []lexicalanalizer.Token, nextToken int) (int, error) {
 	var err error
 	if tokens[nextToken].TokenType != tokentype.Operator {
-		return 0, fmt.Errorf("Unexpected char at position %d, found '%s'", nextToken, tokens[nextToken].Value)
+		return 0, fmt.Errorf("Expected operator at position %d, found '%s'", nextToken, tokens[nextToken].Value)
 	}
 	nextToken++
 
