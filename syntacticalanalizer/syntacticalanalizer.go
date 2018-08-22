@@ -25,18 +25,18 @@ func ParseExpression(tokens []lexicalanalizer.Token) error {
 }
 
 func parseParenthesis(tokens []lexicalanalizer.Token, nextToken int) (int, error) {
-	if tokens[nextToken].TokenType != tokentype.Parenthesis && tokens[nextToken].Value != "(" {
-		return 0, fmt.Errorf("Expected '(' at position %d, found '%s'", nextToken, tokens[nextToken].Value)
+	if tokens[nextToken].TokenType != tokentype.Parenthesis || tokens[nextToken].Value != "(" {
+		return nextToken, fmt.Errorf("Expected '(' at position %d, found '%s'", nextToken, tokens[nextToken].Value)
 	}
 
 	var err error
 	nextToken, err = parseOperation(tokens, nextToken+1)
 	if err != nil {
-		return 0, err
+		return nextToken, err
 	}
 
-	if tokens[nextToken].TokenType != tokentype.Parenthesis && tokens[nextToken].Value != ")" {
-		return 0, fmt.Errorf("Expected ')' at position %d, found '%s'", nextToken, tokens[nextToken].Value)
+	if tokens[nextToken].TokenType != tokentype.Parenthesis || tokens[nextToken].Value != ")" {
+		return nextToken, fmt.Errorf("Expected ')' at position %d, found '%s'", nextToken, tokens[nextToken].Value)
 	}
 	nextToken++
 	return nextToken, nil
@@ -49,26 +49,26 @@ func parseOperation(tokens []lexicalanalizer.Token, nextToken int) (int, error) 
 	}
 	nextToken++
 
-	nextToken, err = parseOperationTerm(tokens, nextToken)
+	nextToken, err = parseOperand(tokens, nextToken)
 	if err != nil {
-		return 0, err
+		return nextToken, err
 	}
 
-	nextToken, err = parseOperationTerm(tokens, nextToken)
+	nextToken, err = parseOperand(tokens, nextToken)
 	if err != nil {
-		return 0, err
+		return nextToken, err
 	}
 	return nextToken, nil
 }
 
-func parseOperationTerm(tokens []lexicalanalizer.Token, nextToken int) (int, error) {
+func parseOperand(tokens []lexicalanalizer.Token, nextToken int) (int, error) {
 	if tokens[nextToken].TokenType == tokentype.Number || tokens[nextToken].TokenType == tokentype.Variable {
 		nextToken++
 	} else {
 		var err error
 		nextToken, err = parseParenthesis(tokens, nextToken)
 		if err != nil {
-			return 0, err
+			return 0, fmt.Errorf("Expected operand at position %d, found '%s'", nextToken, tokens[nextToken].Value)
 		}
 	}
 	return nextToken, nil
